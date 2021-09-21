@@ -27,10 +27,14 @@ public class Tester {
         menu.add("2. Search a food by name");
         menu.add("3. Remove the food by ID");
         menu.add("4. Print the food list in the descending order of expired date");
-        menu.add("5. Quit");
+        menu.add("5. Save file");
+        menu.add("6. Quit");
         Manager list = new Manager();
         if (!list.loadFromFile(fileName)) {
-            System.out.println("Load food.txt failed");
+            System.err.println("Load food.dat failed");
+        }else{
+            System.err.println("Load food.dat succesful");
+                    
         }
         do {
             System.out.println("-------Food management in a refrigerator-------");
@@ -47,18 +51,21 @@ public class Tester {
 
                     break;
                 case 4:
-                    list.printFood();
+                    list.listSortAndPrint();
                     break;
                 case 5:
-                    System.out.print("Save changes Y/N?: ");
-                    String t = sc.nextLine().toUpperCase();
-                    if (t.startsWith(t)) {
+                    String t = Valdation.getInputYN("Save changes Y/N?:", "Invalid", false);
+                    if(t.equalsIgnoreCase("Y")){
                         list.savetoFile(fileName);
+                        System.err.println("Save succesful");
+                    }else if (t.equalsIgnoreCase("N")){
+                        break;
                     }
-                    System.err.println("Succesful");
+                    break;
+                case 6:
                     System.exit(0);
             }
-        } while (choice >= 1 || choice <= 5);
+        } while (choice >= 1 || choice <= 6);
     }
 
 }

@@ -11,16 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -40,7 +32,7 @@ public class Valdation {
         if (nothing) {
             return null;
         }
-        System.out.println(error);
+        System.err.println(error);
         return getString(input, error, nothing);
     }
 
@@ -161,6 +153,31 @@ public class Valdation {
         System.out.println(error);
         return getCode(input, error, format);
     }
+//    public java.sql.Date getDate(String msg) {
+//            String str;
+//            Scanner sc = new Scanner(System.in);
+//            java.sql.Date date = null;
+//            boolean isValid;
+//		do {
+//                    try {
+//                        isValid = true;
+//			str = this.getString(Validator.StringType.STRING, 0, 255, msg);
+//                        if (str.isEmpty()) {
+//                            throw new Exception();
+//                        }
+//                        
+//                        if (!Validator.checkValidDate(str)) {
+//                            throw new Exception();
+//                        }
+//                        date = java.sql.Date.valueOf(str);
+//                    } catch (Exception e) {
+//                        System.out.println("Invalid value");
+//                        isValid = false;
+//                    }
+//		} while (date == null); 
+//		
+//            return date;
+//        }
 //    public void AddFromFile(String fname){
 //        try{
 //            File f = new File(fname);
@@ -201,5 +218,16 @@ public class Valdation {
 //            System.out.println(e);
 //        }
 //    }
-    
+    public static String getInputYN(String input, String error, boolean nothing){
+        boolean t = true;
+        String result = null;
+        do {            
+            String a = getString(input, error, false);
+            if(a.equalsIgnoreCase("Y")||a.equalsIgnoreCase("N")){
+                result = a;
+                t = false;
+            }
+        } while (t);
+        return result;
+    }
 }

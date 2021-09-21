@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -43,33 +44,46 @@ public class Manager extends Vector<Food> {
                 System.err.println("The ID is duplicated");
             }
         } while (pos >= 0);
-        System.out.print("Enter the name of food: ");
-        newName = sc.nextLine().trim();
-        System.out.print("Enter the type of food: ");
-        newType = sc.nextLine().trim();
-        System.out.print("Enter the place of food: ");
-        newPlace = sc.nextLine().trim();
-        System.out.print("Enter the expired date of food: ");
-        newExpiredDate = sc.nextLine().trim();
+        newName = Valdation.getString("Enter the name of food: ", "Invalid", false);
+        newType = Valdation.getString("Enter the type of food: ", "Invalid", false);
+        newPlace = Valdation.getString("Enter the place of food: ", "Invalid", false);
         newWeight = Valdation.getDouble("Enter the weight of food: ", "Invalid. Please try again!", 0, Double.MAX_VALUE);
-        this.add(new Food(newID, newName, newWeight, newType, newPlace, newExpiredDate));
-        System.err.println("Successful! ");
+        boolean t = true;
+        do {            
+            System.out.print("Enter the expired date of food: ");
+            newExpiredDate = sc.nextLine().trim();
+            if(checkValidDate(newExpiredDate)){
+                String exp = newExpiredDate;
+                this.add(new Food(newID, newName, newWeight, newType, newPlace, exp));
+                t = false;
+            }else{
+                System.err.println("Invalid Date");
+            }
+        } while (t);
+        System.err.println("Succesfull");
+        String a = Valdation.getInputYN("Do you want to add another food(Y/N): ","Invalid", false);
+        if(a.equalsIgnoreCase("Y")){
+            addFood();
+        }
     }
 
     public void findName() {
         int s = this.size();
         int count = 0;
-        System.out.print("Enter the nameFood to find: ");
-        String findName = sc.nextLine();
+        String findName = Valdation.getString("Enter the name to search: ", "Invalid", false);
         for (int i = 0; i < s; i++) {
             String tempName = this.get(i).getName();
             if (tempName.contains(findName)) {
                 System.out.println(this.get(i).toString());
                 count++;
-            };
+            }
         }
         if (count == 0) {
             System.err.println("No have that name");
+        }
+        String a = Valdation.getInputYN("Do you want to search another food(Y/N): ","Invalid", false);
+        if(a.equalsIgnoreCase("Y")){
+            findName();
         }
     }
 
@@ -81,22 +95,14 @@ public class Manager extends Vector<Food> {
         if (pos < 0) {
             System.err.println("The ID does not exist");
         } else {
+            String a = Valdation.getInputYN("Are you sure to remove this ID(Y/N): ","Invalid", false);
+            if(a.equalsIgnoreCase("Y")){
             this.remove(pos);
-            System.err.println("The food have ID:  " + IDremove + "has been remove");
+            System.err.println("The food have ID:  " + IDremove + " has been remove");
+        }
         }
     }
 
-    public void printFood() {
-        if (this.size() == 0) {
-            System.err.println("Empty List");
-            return;
-        }
-        Collections.sort(this);
-        System.out.println("----FoodList----");
-        for (Food x : this) {
-            x.output();
-        }
-    }
 
     private int find(String aCode) {
         for (int i = 0; i < this.size(); i++) {
@@ -152,16 +158,52 @@ public class Manager extends Vector<Food> {
         return true;
     }
 
-    public void print() {
-        if (this.size() == 0) {
-            System.out.println("Empty list.");
+//
+//    public void printFood() {
+//        if (this.isEmpty()) {
+//            System.err.println("Empty List");
+//            return;
+//        }
+//        Collections.sort(this);
+//        System.out.println("----FoodList----");
+//        this.forEach((x) -> {
+//            x.output();
+//        });
+//    }    
+    
+    public void listSortAndPrint() {
+        Food e = null;
+        int n = this.size();
+        if(this.isEmpty()){
+            System.err.println("Empty list");
             return;
         }
-        Collections.sort(this);
-        System.out.println("\nFOOD LIST");
-        System.out.println("--------------------------------");
-        for (Food x : this) {
-            x.toString();
+        for (int i = 0; i < n-1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                
+                if (this.get(j+1).getExpiredDate().compareTo(this.get(j).getExpiredDate()) > 0) {
+                    e = this.get(j);
+                    this.set(j, this.get(j+1));
+                    this.set(j+1, e);
+                }
+            }
         }
+        System.out.println("----FoodList----");
+        this.forEach((item) -> {
+            System.out.println(item.toString());
+        });
+    }
+    public static boolean checkValidDate(String input) {
+        String formatString = "dd/MM/yyyy";
+
+        try {
+            SimpleDateFormat format = new SimpleDateFormat(formatString);
+            format.setLenient(false);
+            format.parse(input);
+        } catch(Exception e){
+            return false;
+        }
+
+        return true;
     }
 }
